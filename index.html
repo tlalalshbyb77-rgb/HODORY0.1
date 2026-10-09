@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="حُضوري: لوحة ذكية لإدارة اليوم الدراسي والإعلانات الفورية.">
+  <title>حُضوري | إدارة اليوم الدراسي</title>
+  <script>
+    document.documentElement.dataset.theme = 'light';
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#student" aria-label="حُضوري، الصفحة الرئيسية"><span>ح</span> حُضوري</a>
+    <nav class="main-nav" aria-label="التنقل الرئيسي">
+      <button class="nav-link is-active" type="button" data-view="student">الطالب</button>
+      <button class="nav-link" type="button" data-view="doctor">الدكتور</button>
+      <button class="nav-link" type="button" data-view="admin">الإدارة</button>
+    </nav>
+    <button class="theme-button" id="themeToggle" type="button" aria-label="تفعيل الوضع الداكن" aria-pressed="false">
+      <span aria-hidden="true">☾</span><span class="theme-label">داكن</span>
+    </button>
+  </header>
+
+  <main class="app-shell">
+    <section class="view is-active" id="studentView" aria-labelledby="studentTitle">
+      <div class="page-intro">
+        <div>
+          <p class="eyebrow">لوحة الطالب · السيم الرابع</p>
+          <h1 id="studentTitle">صباح الخير، فاطمة 👋</h1>
+          <p id="currentDate" class="muted"></p>
+        </div>
+        <button class="button button-secondary" type="button" data-view="doctor">تجربة تحديث دكتور <span>←</span></button>
+      </div>
+
+      <section class="summary-grid" aria-label="ملخص اليوم">
+        <article class="metric-card accent-card"><span class="metric-icon">✓</span><div><strong id="confirmedCount">0</strong><p>محاضرات مؤكدة</p></div></article>
+        <article class="metric-card"><span class="metric-icon danger">×</span><div><strong id="cancelledCount">0</strong><p>محاضرات ملغاة</p></div></article>
+        <article class="metric-card"><span class="metric-icon wait">◷</span><div><strong id="pendingCount">0</strong><p>بانتظار التأكيد</p></div></article>
+      </section>
+
+      <section class="live-banner" aria-label="آخر تحديث">
+        <div class="live-dot" aria-hidden="true"></div>
+        <div><p class="eyebrow">تحديث مباشر</p><h2 id="highlightTitle">يتم تجهيز جدول اليوم</h2><p id="highlightText">ستظهر أحدث رسائل الدكاترة هنا فور نشرها.</p></div>
+        <button class="text-button" type="button" data-scroll-to="notices">عرض الإعلانات</button>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel schedule-panel">
+          <div class="section-heading">
+            <div><p class="eyebrow">جدولك</p><h2>محاضرات اليوم</h2></div>
+            <div class="day-selector" id="daySelector" aria-label="اختر يومًا"></div>
+          </div>
+          <div class="schedule-list" id="scheduleList" aria-live="polite"></div>
+        </article>
+
+        <aside class="panel notices-panel" id="notices">
+          <div class="section-heading"><div><p class="eyebrow">آخر الأخبار</p><h2>إعلانات المحاضرات</h2></div><span class="count-pill" id="noticeCount">0</span></div>
+          <div class="notice-list" id="noticeList" aria-live="polite"></div>
+        </aside>
+      </section>
+    </section>
+
+    <section class="view" id="doctorView" aria-labelledby="doctorTitle" hidden>
+      <div class="page-intro">
+        <div><p class="eyebrow">وضع الدكتور · تجربة عملية</p><h1 id="doctorTitle">حدّث طلابك في ثوانٍ</h1><p class="muted">سيتغيّر جدول الطالب وسجل الإعلانات مباشرة في هذه النسخة التجريبية.</p></div>
+        <span class="identity-chip"><span class="avatar">و</span> أ. وليد البرغثي</span>
+      </div>
+      <section class="doctor-layout">
+        <article class="panel form-panel">
+          <div class="section-heading"><div><p class="eyebrow">نشر تحديث</p><h2>حالة المحاضرة</h2></div></div>
+          <form id="updateForm">
+            <div class="form-grid">
+              <label>المادة<select id="courseSelect" required></select></label>
+              <label>الحالة<select id="statusSelect" required><option value="confirmed">المحاضرة قائمة</option><option value="cancelled">المحاضرة ملغاة</option><option value="pending">بانتظار التأكيد</option></select></label>
+              <label>القاعة<select id="roomSelect"><option>قاعة 3</option><option>معمل الحاسوب 2</option><option>قاعة 12</option><option>عن بُعد</option></select></label>
+              <label>وقت البداية<input id="startTime" type="time" value="08:30"></label>
+            </div>
+            <label class="full-label">رسالة للطلاب<textarea id="announcement" rows="4" maxlength="180" placeholder="مثال: المحاضرة اليوم في معمل الحاسوب 2، الرجاء الحضور في الوقت."></textarea><span class="field-help">حتى 180 حرفًا · الرسالة اختيارية</span></label>
+            <button class="button button-primary submit-button" type="submit">نشر التحديث للطلاب <span>↗</span></button>
+          </form>
+        </article>
+        <aside class="doctor-tip"><span>✦</span><div><h2>لماذا هذا مهم؟</h2><p>تحديث قصير قبل المحاضرة يوفر وقت الطلاب، ويقلل الرسائل المتكررة والاستفسارات.</p></div></aside>
+      </section>
+    </section>
+
+    <section class="view" id="adminView" aria-labelledby="adminTitle" hidden>
+      <div class="page-intro"><div><p class="eyebrow">لوحة الإدارة</p><h1 id="adminTitle">صورة واضحة عن اليوم الدراسي</h1><p class="muted">مؤشرات تساعد الإدارة على متابعة المحاضرات والإعلانات بسرعة.</p></div><button class="button button-secondary" id="resetDemo" type="button">إعادة ضبط البيانات التجريبية</button></div>
+      <section class="summary-grid admin-metrics">
+        <article class="metric-card"><span class="metric-icon">▦</span><div><strong id="courseCount">0</strong><p>مواد مجدولة</p></div></article>
+        <article class="metric-card accent-card"><span class="metric-icon">↗</span><div><strong id="updateCount">0</strong><p>تحديثات اليوم</p></div></article>
+        <article class="metric-card"><span class="metric-icon wait">◷</span><div><strong id="adminPendingCount">0</strong><p>تحتاج تأكيدًا</p></div></article>
+      </section>
+      <section class="content-grid admin-grid">
+        <article class="panel"><div class="section-heading"><div><p class="eyebrow">متابعة سريعة</p><h2>حالة المواد</h2></div></div><div class="admin-table-wrap"><table><thead><tr><th>المادة</th><th>الدكتور</th><th>القاعة</th><th>الحالة</th></tr></thead><tbody id="adminTable"></tbody></table></div></article>
+        <aside class="panel"><div class="section-heading"><div><p class="eyebrow">سجل النشاط</p><h2>آخر التغييرات</h2></div></div><div class="notice-list" id="activityList"></div></aside>
+      </section>
+    </section>
+  </main>
+
+  <footer>حُضوري · نموذج واجهة لإدارة اليوم الدراسي · البيانات محفوظة محليًا للتجربة</footer>
+  <script src="app.js"></script>
+</body>
+</html>
